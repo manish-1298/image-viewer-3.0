@@ -29,7 +29,7 @@ def index():
                 url = url.strip()
                 img_data = fetch_image(url)
                 if img_data:
-                    images.append((img_data, url))  # Ensure it passes as a tuple
+                    images.append((img_data, url))
     return render_template("index.html", images=images)
 
 if __name__ == "__main__":
