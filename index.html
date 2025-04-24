@@ -69,9 +69,6 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     .image-number {
@@ -79,7 +76,6 @@
       font-size: 13px;
       margin-bottom: 5px;
       color: #333;
-      width: 100%;
       text-align: left;
     }
 
@@ -91,19 +87,16 @@
       gap: 8px;
     }
 
-    .rotate-btn {
-      background: none;
-      border: none;
-      font-size: 20px;
-      font-weight: bold;
+    .rotate-icons span {
       cursor: pointer;
-      color: grey;
-      transition: transform 0.2s, color 0.2s;
+      font-size: 18px;
+      color: #888;
+      font-weight: bold;
+      user-select: none;
     }
 
-    .rotate-btn:hover {
-      color: #444;
-      transform: scale(1.2);
+    .rotate-icons span:hover {
+      color: #555;
     }
 
     img {
@@ -199,8 +192,14 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -214,12 +213,12 @@
   </div>
   <hr />
   <div id="imageGallery">
-    {% for img_data, url, idx in images %}
+    {% for img_data, url in images %}
     <div class="image-container">
-      <div class="image-number">Image {{ idx }}</div>
+      <div class="image-number">Image {{ loop.index }}</div>
       <div class="rotate-icons">
-        <button class="rotate-btn" onclick="rotateImage(this, -90)">⟲</button>
-        <button class="rotate-btn" onclick="rotateImage(this, 90)">⟳</button>
+        <span onclick="rotateImage(this, -90)">⟲</span>
+        <span onclick="rotateImage(this, 90)">⟳</span>
       </div>
       <img src="data:image/png;base64,{{ img_data }}" alt="Image" />
       <div class="url-row">
@@ -245,12 +244,13 @@
       });
     }
 
-    function rotateImage(button, degree) {
-      const img = button.closest(".image-container").querySelector("img");
-      const current = img.getAttribute("data-rotation") || "0";
-      const newRotation = (parseInt(current) + degree) % 360;
-      img.style.transform = `rotate(${newRotation}deg)`;
-      img.setAttribute("data-rotation", newRotation);
+    function rotateImage(icon, angle) {
+      const container = icon.closest(".image-container");
+      const img = container.querySelector("img");
+      let currentRotation = parseInt(img.getAttribute("data-rotation") || "0");
+      currentRotation = (currentRotation + angle) % 360;
+      img.style.transform = `rotate(${currentRotation}deg)`;
+      img.setAttribute("data-rotation", currentRotation);
     }
 
     window.onscroll = function () {
